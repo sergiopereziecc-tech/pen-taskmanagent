@@ -37,7 +37,7 @@ public class Task {
     private String description;
 
     @Enumerated(EnumType.STRING)
-    private Task_Status status;
+    private TaskStatus status;
 
     @ManyToOne
     @JoinColumn(name = "user_id")

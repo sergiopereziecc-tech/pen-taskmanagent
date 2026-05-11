@@ -33,7 +33,7 @@ public class Project {
     private String description;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
-    private Project_Status status;
+    private ProjectStatus status;
 
     @OneToMany(mappedBy = "project")
     private List<Task> tasks;

@@ -1,5 +1,5 @@
 package com.pen.taskmanagement.model;
 
-public enum Project_Status {
+public enum ProjectStatus {
     PENDING, ONGOING, FINISHED
 }
