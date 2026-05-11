@@ -1,55 +1,46 @@
 package com.pen.taskmanagement.model;
 
-import java.time.LocalDateTime;
+import java.util.List;
 
-import org.hibernate.annotations.ValueGenerationType;
+import org.springframework.web.bind.annotation.Mapping;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-
 @Entity
 @Getter
 @Setter
+@Table(name = "user_data")
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "task")
-public class Task {
-    
+public class User {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @NotBlank
     private String name;
-    private LocalDateTime startTime;
-    private LocalDateTime endTime;
-    private String description;
+    @NotBlank
+    private String surname;
+    @NotBlank
+    private String email;
+    @NotBlank
+    private String username;
+    private String password;
 
-    @Enumerated(EnumType.STRING)
-    private Task_Status status;
-
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
-
-    @ManyToOne
-    @JoinColumn(name = "project_id")
-    private Project project;
-
-
-
-
-    
-
+    @OneToMany(mappedBy = "user")
+    private List<Task> tasks;
+    @ManyToMany(mappedBy = "users")
+    private List<Project> projects;
 }
