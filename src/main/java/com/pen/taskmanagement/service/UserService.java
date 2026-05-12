@@ -11,7 +11,7 @@ public interface UserService {
 
     UserResponse createUser(UserRequest userRequest);
 
-    List<UserResponse> users();
+    List<UserResponse> readAllUsers();
 
     UserResponse readUser(Long id);
 

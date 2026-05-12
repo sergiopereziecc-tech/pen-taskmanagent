@@ -19,6 +19,7 @@ public class ProjectMapper {
         project.setStartTime(projectRequest.starDateTime());
         project.setEndTime(projectRequest.endDateTime());
         project.setStatus(ProjectStatus.PENDING);
+        
 
         return project;
     }
