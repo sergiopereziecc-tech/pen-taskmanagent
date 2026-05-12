@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 public record TaskRequest(
     String name,
     String description,
-    LocalDateTime starDateTime,
+    LocalDateTime startDateTime,
     LocalDateTime endDateTime,
     Long userId,
     Long projectId

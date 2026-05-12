@@ -7,7 +7,7 @@ import com.pen.taskmanagement.model.TaskStatus;
 public record TaskResponse(
     String name,
     String description,
-    LocalDateTime starDateTime,
+    LocalDateTime startDateTime,
     LocalDateTime endDateTime,
     String username,
     String userFirstname,
