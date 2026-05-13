@@ -1,5 +1,7 @@
 package com.pen.taskmanagement.mapper;
 
+import org.springframework.stereotype.Component;
+
 import com.pen.taskmanagement.dtos.TaskRequest;
 import com.pen.taskmanagement.dtos.TaskResponse;
 import com.pen.taskmanagement.model.Project;
@@ -7,6 +9,7 @@ import com.pen.taskmanagement.model.Task;
 import com.pen.taskmanagement.model.TaskStatus;
 import com.pen.taskmanagement.model.User;
 
+@Component
 public class TaskMapper {
     
     public Task toEntity(TaskRequest taskRequest,User user, Project project){

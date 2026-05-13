@@ -27,7 +27,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public ProjectResponse createProject(ProjectRequest projectRequest) {
-        List<User> userIds = userRepository.findAllById(projectRequest.userIds());
+        List<User> userIds = (userIds != null) ? (userRepository.findAllById(projectRequest.userIds())) : (List.of());
         Project project = projectMapper.toEntity(projectRequest);
         project.setUsers(userIds);
         return projectMapper.toResponse(projectRepository.save(project));
