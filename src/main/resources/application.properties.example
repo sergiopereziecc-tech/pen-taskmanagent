@@ -1,8 +1,8 @@
 spring.application.name=taskmanagement
 
-spring.datasource.url=${DB_URL}
-spring.datasource.username=${DB_USER}
-spring.datasource.password=${DB_PASSWORD}
+spring.datasource.url=url_here
+spring.datasource.username=username_here
+spring.datasource.password=password_here
 
 spring.jpa.hibernate.ddl-auto=update
 
