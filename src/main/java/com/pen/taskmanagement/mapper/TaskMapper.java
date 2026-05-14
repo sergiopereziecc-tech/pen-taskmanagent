@@ -18,7 +18,6 @@ public class TaskMapper {
 
         task.setName(taskRequest.name());
         task.setDescription(taskRequest.description());
-        task.setStartTime(taskRequest.startDateTime());
         task.setEndTime(taskRequest.endDateTime());
         task.setUser(user);
         task.setProject(project);

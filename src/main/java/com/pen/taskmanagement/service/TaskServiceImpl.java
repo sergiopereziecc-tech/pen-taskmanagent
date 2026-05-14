@@ -1,5 +1,6 @@
 package com.pen.taskmanagement.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -35,15 +36,13 @@ public class TaskServiceImpl implements TaskService {
                         .orElseThrow(() -> new ResourceNotFoundException("User not found")))
                 : (null);
 
-
         Project project = projectRepository.findById(taskRequest.projectId())
                 .orElseThrow(() -> new ResourceNotFoundException("Project not found"));
 
         Task task = taskMapper.toEntity(taskRequest, user, project);
-
-        
-
+        task.setStartTime(LocalDateTime.now());
         TaskResponse taskResponse = taskMapper.toResponse(taskRepository.save(task));
+
 
         return taskResponse;
     }
@@ -84,7 +83,7 @@ public class TaskServiceImpl implements TaskService {
         Task task = taskRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Task not found"));
         task.setName(taskRequest.name());
         task.setDescription(taskRequest.description());
-        task.setStartTime(taskRequest.startDateTime());
+        // task.setStartTime(taskRequest.startDateTime());
         task.setEndTime(taskRequest.endDateTime());
         task.setProject(project);
         task.setUser(user);

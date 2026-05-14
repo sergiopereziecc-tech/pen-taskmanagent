@@ -7,6 +7,7 @@ import com.pen.taskmanagement.dtos.ProjectRequest;
 import com.pen.taskmanagement.dtos.ProjectResponse;
 import com.pen.taskmanagement.service.ProjectService;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
@@ -32,7 +33,7 @@ public class ProjectController {
 
 
     @PostMapping("/new")
-    public ResponseEntity<ProjectResponse> createProject(@RequestBody ProjectRequest request) {
+    public ResponseEntity<ProjectResponse> createProject(@Valid @RequestBody ProjectRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(projectService.createProject(request));        
     }
     @GetMapping("/{id}")
@@ -49,7 +50,7 @@ public class ProjectController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
     @PatchMapping("/{id}")
-    public ResponseEntity<ProjectResponse> updateProject(@PathVariable Long id, @RequestBody ProjectRequest request){
+    public ResponseEntity<ProjectResponse> updateProject(@PathVariable Long id, @Valid @RequestBody ProjectRequest request){
         return ResponseEntity.ok(projectService.updateProject(request, id));
     }
 }

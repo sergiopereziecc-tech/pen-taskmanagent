@@ -9,7 +9,6 @@ import com.pen.taskmanagement.model.User;
 public record ProjectRequest(
     String name,
     String description,
-    LocalDateTime starDateTime,
     LocalDateTime endDateTime,
     List<Long> userIds
     

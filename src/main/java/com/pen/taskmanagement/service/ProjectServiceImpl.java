@@ -1,5 +1,6 @@
 package com.pen.taskmanagement.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -32,6 +33,7 @@ public class ProjectServiceImpl implements ProjectService {
         List<User> userIds = (projectRequest.userIds() != null) ? (userRepository.findAllById(projectRequest.userIds())): (List.of());
         Project project = projectMapper.toEntity(projectRequest);
         project.setUsers(userIds);
+        project.setStartTime(LocalDateTime.now());
         return projectMapper.toResponse(projectRepository.save(project));
 
     }
@@ -68,7 +70,7 @@ public class ProjectServiceImpl implements ProjectService {
         
         project.setName(projectRequest.name());
         project.setDescription(projectRequest.description());
-        project.setStartTime(projectRequest.starDateTime());
+        // project.setStartTime(projectRequest.starDateTime());
         project.setEndTime(projectRequest.endDateTime());
         project.setUsers(userIds);
 

@@ -7,6 +7,7 @@ import com.pen.taskmanagement.dtos.TaskRequest;
 import com.pen.taskmanagement.dtos.TaskResponse;
 import com.pen.taskmanagement.service.TaskService;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
@@ -33,7 +34,7 @@ public class TaskController {
 
 
     @PostMapping("/new")
-    public ResponseEntity<TaskResponse> createTask(@RequestBody TaskRequest request) {
+    public ResponseEntity<TaskResponse> createTask(@Valid @RequestBody TaskRequest request) {
         
         
         return ResponseEntity.status(HttpStatus.CREATED).body(taskService.createTask(request));
@@ -56,7 +57,7 @@ public class TaskController {
     }
 
     @PatchMapping("/update/{id}")
-    public ResponseEntity<TaskResponse> updateTask(@PathVariable Long id, @RequestBody TaskRequest request){
+    public ResponseEntity<TaskResponse> updateTask(@PathVariable Long id, @Valid @RequestBody TaskRequest request){
 
         return ResponseEntity.status(HttpStatus.OK).body(taskService.updateTask(request, id));
     }

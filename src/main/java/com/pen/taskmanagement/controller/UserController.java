@@ -7,6 +7,7 @@ import com.pen.taskmanagement.dtos.UserRequest;
 import com.pen.taskmanagement.dtos.UserResponse;
 import com.pen.taskmanagement.service.UserService;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
@@ -32,7 +33,7 @@ public class UserController {
 
 
     @PostMapping("/new")
-    public ResponseEntity<UserResponse> createUser(@RequestBody UserRequest request) {
+    public ResponseEntity<UserResponse> createUser(@Valid @RequestBody UserRequest request) {
         
         return ResponseEntity.status(HttpStatus.CREATED).body(userService.createUser(request));
     }
@@ -50,7 +51,7 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
     @PatchMapping("/{id}")
-    public ResponseEntity<UserResponse> updateUser(@PathVariable Long id, @RequestBody UserRequest request){
+    public ResponseEntity<UserResponse> updateUser(@PathVariable Long id, @Valid @RequestBody UserRequest request){
         return ResponseEntity.ok(userService.updateUser(request, id));
     }
     
