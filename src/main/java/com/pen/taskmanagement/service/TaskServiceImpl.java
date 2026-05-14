@@ -30,13 +30,18 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public TaskResponse createTask(TaskRequest taskRequest) {
-        User user = userRepository.findById(taskRequest.userId())
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        User user = (taskRequest.userId() != null)
+                ? (userRepository.findById(taskRequest.userId())
+                        .orElseThrow(() -> new ResourceNotFoundException("User not found")))
+                : (null);
+
 
         Project project = projectRepository.findById(taskRequest.projectId())
                 .orElseThrow(() -> new ResourceNotFoundException("Project not found"));
 
         Task task = taskMapper.toEntity(taskRequest, user, project);
+
+        
 
         TaskResponse taskResponse = taskMapper.toResponse(taskRepository.save(task));
 

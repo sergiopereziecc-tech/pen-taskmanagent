@@ -30,10 +30,13 @@ public class TaskMapper {
     public TaskResponse toResponse(Task task){
         TaskResponse taskResponse = new TaskResponse(task.getName(),
         task.getDescription(), task.getStartTime(),task.getEndTime(),
-        task.getUser().getUsername(),task.getUser().getName(),task.getUser().getSurname(),
+        task.getUser()!= null ? task.getUser().getUsername() : null ,task.getUser()!= null ? task.getUser().getName() : null,
+        task.getUser()!= null ? task.getUser().getSurname() : null,
         task.getStatus(), task.getProject().getName()
         );
         return taskResponse;
 
     }
+
+    
 }
