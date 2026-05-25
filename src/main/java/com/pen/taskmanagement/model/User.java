@@ -1,7 +1,10 @@
 package com.pen.taskmanagement.model;
 
+import java.util.Collection;
 import java.util.List;
 
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.Mapping;
 
 import jakarta.persistence.Entity;
@@ -24,7 +27,7 @@ import lombok.Setter;
 @Table(name = "user_data")
 @AllArgsConstructor
 @NoArgsConstructor
-public class User {
+public class User implements UserDetails{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -43,4 +46,11 @@ public class User {
     private List<Task> tasks;
     @ManyToMany(mappedBy = "users")
     private List<Project> projects;
+
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        
+        return List.of();
+    }
 }
