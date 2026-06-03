@@ -2,6 +2,7 @@ package com.pen.taskmanagement.service;
 
 import java.util.List;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.pen.taskmanagement.dtos.UserRequest;
@@ -21,12 +22,14 @@ public class UserServiceImpl implements UserService{
     
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private final PasswordEncoder passwordEncoder;
 
 
     @Override
     public UserResponse createUser(UserRequest userRequest) {
         User user = userMapper.toEntity(userRequest);
-        
+
+        user.setPassword(passwordEncoder.encode(userRequest.password()));
         return userMapper.toResponse(userRepository.save(user));
         
     }
