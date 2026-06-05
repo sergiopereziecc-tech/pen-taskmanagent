@@ -50,4 +50,10 @@ public class GlobalExceptionHandler {
 
     }
 
+    @ExceptionHandler(ForbiddenException.class)
+    public ResponseEntity<ApiError> handlePermission(ForbiddenException ex, WebRequest request){
+        ApiError apiError = new ApiError(ex.getMessage(), request.getDescription(false), LocalDateTime.now());
+
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(apiError);
+    }
 }
