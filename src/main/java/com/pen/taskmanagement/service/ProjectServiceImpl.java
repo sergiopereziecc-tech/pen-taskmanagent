@@ -7,12 +7,14 @@ import org.springframework.stereotype.Service;
 
 import com.pen.taskmanagement.dtos.ProjectRequest;
 import com.pen.taskmanagement.dtos.ProjectResponse;
+import com.pen.taskmanagement.exceptions.ForbiddenException;
 import com.pen.taskmanagement.exceptions.ResourceNotFoundException;
 import com.pen.taskmanagement.mapper.ProjectMapper;
 import com.pen.taskmanagement.model.Project;
 import com.pen.taskmanagement.model.User;
 import com.pen.taskmanagement.repository.ProjectRepository;
 import com.pen.taskmanagement.repository.UserRepository;
+import com.pen.taskmanagement.utilities.SecurityUtil;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -25,15 +27,17 @@ public class ProjectServiceImpl implements ProjectService {
     private final ProjectRepository projectRepository;
     private final ProjectMapper projectMapper;
     private final UserRepository userRepository;
+    private final SecurityUtil securityUtil;
 
     @Override
     public ProjectResponse createProject(ProjectRequest projectRequest) {
 
-        
-        List<User> userIds = (projectRequest.userIds() != null) ? (userRepository.findAllById(projectRequest.userIds())): (List.of());
+        List<User> userIds = (projectRequest.userIds() != null) ? (userRepository.findAllById(projectRequest.userIds()))
+                : (List.of());
         Project project = projectMapper.toEntity(projectRequest);
         project.setUsers(userIds);
         project.setStartTime(LocalDateTime.now());
+        project.setCreatedBy(securityUtil.extractUsername());
         return projectMapper.toResponse(projectRepository.save(project));
 
     }
@@ -59,7 +63,15 @@ public class ProjectServiceImpl implements ProjectService {
         if (!projectRepository.existsById(id))
             throw new ResourceNotFoundException("Project not found");
 
-        projectRepository.deleteById(id);
+        Project project = projectRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Project not found"));
+
+        if (securityUtil.extractUsername().equals(project.getCreatedBy())) {
+            projectRepository.deleteById(id);
+        } else {
+            throw new ForbiddenException("Permissions not found");
+        }
+
     }
 
     @Override
@@ -67,12 +79,16 @@ public class ProjectServiceImpl implements ProjectService {
         List<User> userIds = userRepository.findAllById(projectRequest.userIds());
         Project project = projectRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Project not found"));
-        
-        project.setName(projectRequest.name());
-        project.setDescription(projectRequest.description());
-        // project.setStartTime(projectRequest.starDateTime());
-        project.setEndTime(projectRequest.endDateTime());
-        project.setUsers(userIds);
+
+        if (securityUtil.extractUsername().equals(project.getCreatedBy())) {
+            project.setName(projectRequest.name());
+            project.setDescription(projectRequest.description());
+            // project.setStartTime(projectRequest.starDateTime());
+            project.setEndTime(projectRequest.endDateTime());
+            project.setUsers(userIds);
+        } else {
+            throw new ForbiddenException("Permissions not found");
+        }
 
         return projectMapper.toResponse(projectRepository.save(project));
     }
