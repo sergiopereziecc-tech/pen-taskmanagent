@@ -6,7 +6,9 @@ import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import org.springframework.cglib.core.Local;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -55,5 +57,11 @@ public class GlobalExceptionHandler {
         ApiError apiError = new ApiError(ex.getMessage(), request.getDescription(false), LocalDateTime.now());
 
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(apiError);
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ApiError> handleData(DataIntegrityViolationException ex, WebRequest request){
+        ApiError apiError = new ApiError("User already exists", request.getDescription(false), LocalDateTime.now());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(apiError);
     }
 }
