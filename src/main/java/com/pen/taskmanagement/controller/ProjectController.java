@@ -21,36 +21,39 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
-
-
+import org.springframework.web.bind.annotation.PutMapping;
 
 @RestController
 @RequestMapping("/api/project")
 @RequiredArgsConstructor
 public class ProjectController {
-    
+
     private final ProjectService projectService;
 
-
-    @PostMapping("/new")
+    @PostMapping
     public ResponseEntity<ProjectResponse> createProject(@Valid @RequestBody ProjectRequest request) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(projectService.createProject(request));        
+        return ResponseEntity.status(HttpStatus.CREATED).body(projectService.createProject(request));
     }
+
     @GetMapping("/{id}")
     public ResponseEntity<ProjectResponse> getProject(@PathVariable Long id) {
         return ResponseEntity.ok(projectService.readProject(id));
     }
-    @GetMapping("/all")
+
+    @GetMapping
     public ResponseEntity<List<ProjectResponse>> getProjectList() {
         return ResponseEntity.ok(projectService.readProjects());
     }
+
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteProject(@PathVariable Long id){
+    public ResponseEntity<Void> deleteProject(@PathVariable Long id) {
         projectService.deleteProject(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
-    @PatchMapping("/{id}")
-    public ResponseEntity<ProjectResponse> updateProject(@PathVariable Long id, @Valid @RequestBody ProjectRequest request){
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ProjectResponse> updateProject(@PathVariable Long id,
+            @Valid @RequestBody ProjectRequest request) {
         return ResponseEntity.ok(projectService.updateProject(request, id));
     }
 }
