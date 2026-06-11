@@ -25,7 +25,7 @@ public class UserMapper {
     }
 
     public UserResponse toResponse(User user){
-        UserResponse userResponse = new UserResponse(user.getName(),user.getSurname(),user.getEmail());
+        UserResponse userResponse = new UserResponse(user.getName(),user.getSurname(),user.getUsername());
 
         return userResponse;
 
