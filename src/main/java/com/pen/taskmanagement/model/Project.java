@@ -3,6 +3,7 @@ package com.pen.taskmanagement.model;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -39,7 +40,10 @@ public class Project {
     @Enumerated(EnumType.STRING)
     private ProjectStatus status;
 
-    @OneToMany(mappedBy = "project")
+    @OneToMany(mappedBy = "project",
+        cascade = CascadeType.ALL,
+        orphanRemoval = true
+    )
     private List<Task> tasks;
     @ManyToMany
     @JoinTable(name = "project_user", 
