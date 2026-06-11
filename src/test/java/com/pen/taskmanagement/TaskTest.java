@@ -27,6 +27,7 @@ import com.pen.taskmanagement.repository.TaskRepository;
 import com.pen.taskmanagement.repository.UserRepository;
 import com.pen.taskmanagement.service.TaskServiceImpl;
 import com.pen.taskmanagement.service.UserService;
+import com.pen.taskmanagement.utilities.SecurityUtil;
 
 import jakarta.inject.Inject;
 
@@ -45,6 +46,8 @@ public class TaskTest {
     @Mock
     ProjectRepository projectRepository;
 
+    @Mock
+    SecurityUtil securityUtil;
     @InjectMocks
     TaskServiceImpl taskServiceImpl;
 
@@ -81,6 +84,7 @@ public class TaskTest {
         User user = new User();
         user.setId(1L);
         user.setName("Sergio");
+        user.setUsername("tornado");
 
         Project project = new Project();
         project.setId(1L);
@@ -90,6 +94,9 @@ public class TaskTest {
 
         task.setId(1L);
         task.setName("Handler");
+        task.setUser(user);
+
+        
 
         TaskRequest request = new TaskRequest(null, null, null, 1L  , 1L);
 
@@ -98,6 +105,7 @@ public class TaskTest {
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
         when(projectRepository.findById(1L)).thenReturn(Optional.of(project));
         when(taskRepository.findById(1L)).thenReturn(Optional.of(task));
+        when(securityUtil.extractUsername()).thenReturn("tornado");
         when(taskRepository.save(task)).thenReturn(task);
         when(taskMapper.toResponse(task)).thenReturn(taskResponse);
 
