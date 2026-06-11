@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.pen.taskmanagement.dtos.ProjectRequest;
 import com.pen.taskmanagement.dtos.ProjectResponse;
@@ -18,7 +19,7 @@ import com.pen.taskmanagement.repository.ProjectRepository;
 import com.pen.taskmanagement.repository.UserRepository;
 import com.pen.taskmanagement.utilities.SecurityUtil;
 
-import jakarta.transaction.Transactional;
+
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -45,6 +46,7 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Page<ProjectResponse> readProjects(Pageable pageable) {
         return projectRepository.findAll(pageable)
                 .map(projectMapper::toResponse);
@@ -52,6 +54,7 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public ProjectResponse readProject(Long id) {
         Project project = projectRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Project not found"));
