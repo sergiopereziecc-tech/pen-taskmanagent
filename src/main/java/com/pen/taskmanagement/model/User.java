@@ -31,33 +31,35 @@ import lombok.Setter;
 @Table(name = "user_data")
 @AllArgsConstructor
 @NoArgsConstructor
-public class User implements UserDetails{
+public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @NotBlank
+
     private String name;
-    @NotBlank
+
     private String surname;
-    @NotBlank
+
     private String email;
-    @NotBlank
+    
     @Column(unique = true)
     private String username;
+
     private String password;
+
     @Enumerated(EnumType.STRING)
     private RoleEnum role;
 
     @OneToMany(mappedBy = "user")
     private List<Task> tasks;
+
     @ManyToMany(mappedBy = "users")
     private List<Project> projects;
 
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        
+
         return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));
     }
 }
