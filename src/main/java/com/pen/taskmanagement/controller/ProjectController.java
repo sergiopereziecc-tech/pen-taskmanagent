@@ -12,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -41,8 +43,8 @@ public class ProjectController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ProjectResponse>> getProjectList() {
-        return ResponseEntity.ok(projectService.readProjects());
+    public ResponseEntity<Page<ProjectResponse>> getProjectList(Pageable pageable) {
+        return ResponseEntity.ok(projectService.readProjects(pageable));
     }
 
     @DeleteMapping("/{id}")

@@ -12,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -36,9 +38,9 @@ public class UserController {
     public ResponseEntity<UserResponse> getUser(@PathVariable Long id) {
         return ResponseEntity.ok(userService.readUser(id));
     }
-    @GetMapping("/all")
-    public ResponseEntity<List<UserResponse>> getUsersList() {
-        return ResponseEntity.ok(userService.readAllUsers());
+    @GetMapping()
+    public ResponseEntity<Page<UserResponse>> getUsersList(Pageable pageable) {
+        return ResponseEntity.ok(userService.readAllUsers(pageable));
     }
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id){

@@ -3,6 +3,8 @@ package com.pen.taskmanagement.service;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.pen.taskmanagement.dtos.TaskRequest;
@@ -50,10 +52,10 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public List<TaskResponse> readAllTask() {
-        List<TaskResponse> tasks = taskRepository.findAll()
-                .stream().map(taskMapper::toResponse).toList();
-        return tasks;
+    public Page<TaskResponse> readAllTask(Pageable pageable) {
+        return taskRepository.findAll(pageable)
+                .map(taskMapper::toResponse);
+        
     }
 
     @Override

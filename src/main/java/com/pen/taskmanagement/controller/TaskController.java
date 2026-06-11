@@ -12,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -38,8 +40,8 @@ public class TaskController {
     }
 
     @GetMapping
-    public ResponseEntity<List<TaskResponse>> getListTasks() {
-        return ResponseEntity.ok(taskService.readAllTask());
+    public ResponseEntity<Page<TaskResponse>> getListTasks(Pageable pageable) {
+        return ResponseEntity.ok(taskService.readAllTask(pageable));
     }
 
     @GetMapping("/{id}")

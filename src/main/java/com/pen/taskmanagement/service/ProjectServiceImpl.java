@@ -3,6 +3,8 @@ package com.pen.taskmanagement.service;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.pen.taskmanagement.dtos.ProjectRequest;
@@ -43,11 +45,10 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public List<ProjectResponse> readProjects() {
-        List<ProjectResponse> projects = projectRepository.findAll()
-                .stream().map(projectMapper::toResponse)
-                .toList();
-        return projects;
+    public Page<ProjectResponse> readProjects(Pageable pageable) {
+        return projectRepository.findAll(pageable)
+                .map(projectMapper::toResponse);
+
     }
 
     @Override
