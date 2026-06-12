@@ -7,7 +7,6 @@ import com.pen.taskmanagement.dtos.AuthResponse;
 import com.pen.taskmanagement.dtos.LogInRequest;
 import com.pen.taskmanagement.dtos.LogInResponse;
 import com.pen.taskmanagement.dtos.UserRequest;
-import com.pen.taskmanagement.model.User;
 import com.pen.taskmanagement.service.UserSecurityService;
 import com.pen.taskmanagement.service.UserService;
 import com.pen.taskmanagement.utilities.JwtUtil;
