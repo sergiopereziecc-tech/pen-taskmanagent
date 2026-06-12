@@ -7,6 +7,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
@@ -17,10 +18,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.pen.taskmanagement.dtos.TaskRequest;
 import com.pen.taskmanagement.dtos.TaskResponse;
+import com.pen.taskmanagement.exceptions.ForbiddenException;
 import com.pen.taskmanagement.exceptions.ResourceNotFoundException;
 import com.pen.taskmanagement.mapper.TaskMapper;
 import com.pen.taskmanagement.model.Project;
+import com.pen.taskmanagement.model.RoleEnum;
 import com.pen.taskmanagement.model.Task;
+import com.pen.taskmanagement.model.TaskStatus;
 import com.pen.taskmanagement.model.User;
 import com.pen.taskmanagement.repository.ProjectRepository;
 import com.pen.taskmanagement.repository.TaskRepository;
@@ -79,7 +83,7 @@ public class TaskTest {
     }
 
     @Test
-    void shouldUpdateSuccessfully(){
+    void shouldUpdateSuccessfully() {
 
         User user = new User();
         user.setId(1L);
@@ -96,9 +100,7 @@ public class TaskTest {
         task.setName("Handler");
         task.setUser(user);
 
-        
-
-        TaskRequest request = new TaskRequest(null, null, null, 1L  , 1L);
+        TaskRequest request = new TaskRequest(null, null, null, 1L, 1L);
 
         TaskResponse taskResponse = new TaskResponse(null, null, null, null, null, null, null, null, null);
 
@@ -115,7 +117,7 @@ public class TaskTest {
     }
 
     @Test
-    void shouldNotUpdate(){
+    void shouldNotUpdate() {
 
         TaskRequest taskRequest = new TaskRequest(null, null, null, 1L, 1L);
         User user = new User();
@@ -129,19 +131,45 @@ public class TaskTest {
         when(projectRepository.findById(1L)).thenReturn(Optional.of(project));
         when(taskRepository.findById(99L)).thenReturn(Optional.empty());
 
-        assertThrows(ResourceNotFoundException.class, ()-> taskServiceImpl.updateTask(taskRequest, 99L));
+        assertThrows(ResourceNotFoundException.class, () -> taskServiceImpl.updateTask(taskRequest, 99L));
 
     }
 
     @Test
-    void deleteNotSuccessfully(){
-        
+    void deleteNotSuccessfully() {
 
-        when(taskRepository.existsById(99L)).thenReturn(false);
+        when(taskRepository.findById(99L)).thenReturn(Optional.empty());
 
         assertThrows(ResourceNotFoundException.class, () -> taskServiceImpl.deleteTask(99L));
     }
 
-    
+    @Test
+    void shouldThrowForbiddenWhenDeletingTaskWithWrongUser() {
+        User user = new User(
+                1L,
+                "John",
+                "Doe",
+                "john.doe@example.com",
+                "johndoe",
+                "password123",
+                RoleEnum.USER,
+                List.of(),
+                List.of());
+
+        Task task = new Task(
+                1L,
+                "Implement JWT Authentication",
+                LocalDateTime.now(),
+                LocalDateTime.now().plusDays(2),
+                "Implement login and token generation",
+                TaskStatus.PENDING,
+                user,
+                null);
+
+        when(taskRepository.findById(1L)).thenReturn(Optional.of(task));
+        when(securityUtil.extractUsername()).thenReturn("tornado");
+
+        assertThrows(ForbiddenException.class, () -> taskServiceImpl.deleteTask(1L));
+    }
 
 }
