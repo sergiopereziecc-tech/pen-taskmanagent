@@ -9,7 +9,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.pen.taskmanagement.model.RoleEnum;
+
 import com.pen.taskmanagement.utilities.JwtFilter;
 
 import lombok.RequiredArgsConstructor;

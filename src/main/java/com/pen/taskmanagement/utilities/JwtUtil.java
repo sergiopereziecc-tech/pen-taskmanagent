@@ -1,14 +1,13 @@
 package com.pen.taskmanagement.utilities;
 
-import java.security.Key;
+
 import java.util.Date;
-import java.util.Base64.Decoder;
+
 
 import javax.crypto.SecretKey;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
@@ -17,7 +16,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
-import lombok.RequiredArgsConstructor;
+
 
 
 @Component
