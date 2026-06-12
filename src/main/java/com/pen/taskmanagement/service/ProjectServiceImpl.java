@@ -19,7 +19,6 @@ import com.pen.taskmanagement.repository.ProjectRepository;
 import com.pen.taskmanagement.repository.UserRepository;
 import com.pen.taskmanagement.utilities.SecurityUtil;
 
-
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -64,8 +63,6 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public void deleteProject(Long id) {
-        if (!projectRepository.existsById(id))
-            throw new ResourceNotFoundException("Project not found");
 
         Project project = projectRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Project not found"));

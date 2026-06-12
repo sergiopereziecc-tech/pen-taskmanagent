@@ -59,8 +59,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void deleteUser(Long id) {
-        if (!userRepository.existsById(id))
-            throw new ResourceNotFoundException("User not found");
         User user = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         if (user.getUsername().equals(securityUtil.extractUsername())) {
