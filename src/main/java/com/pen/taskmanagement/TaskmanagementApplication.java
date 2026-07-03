@@ -11,7 +11,11 @@ public class TaskmanagementApplication {
 
 	public static void main(String[] args) {
 
+<<<<<<< HEAD
 		Dotenv dotenv = Dotenv.configure().ignoreIfMissing().load();
+=======
+		Dotenv dotenv = Dotenv.configure().ignoreIfMissing().systemProperties().load();
+>>>>>>> feature/deploy
 		for (DotenvEntry doten : dotenv.entries()) {
 			System.setProperty(doten.getKey(), doten.getValue());
 		}
