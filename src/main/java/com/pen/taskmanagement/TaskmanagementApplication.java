@@ -11,10 +11,7 @@ public class TaskmanagementApplication {
 
 	public static void main(String[] args) {
 
-		Dotenv dotenv = Dotenv.configure().ignoreIfMissing().systemProperties().load();
-		for (DotenvEntry doten : dotenv.entries()) {
-			System.setProperty(doten.getKey(), doten.getValue());
-		}
+		
 		SpringApplication.run(TaskmanagementApplication.class, args);
 	}
 
