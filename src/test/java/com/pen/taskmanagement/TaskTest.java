@@ -30,10 +30,10 @@ import com.pen.taskmanagement.repository.ProjectRepository;
 import com.pen.taskmanagement.repository.TaskRepository;
 import com.pen.taskmanagement.repository.UserRepository;
 import com.pen.taskmanagement.service.TaskServiceImpl;
-import com.pen.taskmanagement.service.UserService;
+
 import com.pen.taskmanagement.utilities.SecurityUtil;
 
-import jakarta.inject.Inject;
+
 
 @ExtendWith(MockitoExtension.class)
 public class TaskTest {
@@ -63,6 +63,7 @@ public class TaskTest {
         Project project = new Project();
         project.setId(1L);
         project.setName("Main");
+        project.setCreatedBy("tornado");
         Task task = new Task();
         task.setId(1L);
         task.setName("Task");
@@ -71,6 +72,7 @@ public class TaskTest {
 
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
         when(projectRepository.findById(1L)).thenReturn(Optional.of(project));
+        when(securityUtil.extractUsername()).thenReturn("tornado");
         when(taskMapper.toEntity(request, user, project)).thenReturn(task);
         when(taskRepository.save(task)).thenReturn(task);
         when(taskMapper.toResponse(task)).thenReturn(taskResponse);
@@ -145,12 +147,16 @@ public class TaskTest {
 
     @Test
     void shouldThrowForbiddenWhenDeletingTaskWithWrongUser() {
+
+        Project project = new Project();
+        project.setCreatedBy("1tr");
+
         User user = new User(
                 1L,
                 "John",
                 "Doe",
                 "john.doe@example.com",
-                "johndoe",
+                "123",
                 "password123",
                 RoleEnum.USER,
                 List.of(),
@@ -164,7 +170,7 @@ public class TaskTest {
                 "Implement login and token generation",
                 TaskStatus.PENDING,
                 user,
-                null);
+                project);
 
         when(taskRepository.findById(1L)).thenReturn(Optional.of(task));
         when(securityUtil.extractUsername()).thenReturn("tornado");
