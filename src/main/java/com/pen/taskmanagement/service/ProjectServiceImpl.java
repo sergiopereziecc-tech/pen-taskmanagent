@@ -77,9 +77,16 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public ProjectResponse updateProject(ProjectRequest projectRequest, Long id) {
-        List<User> userIds = userRepository.findAllById(projectRequest.userIds());
+
+        List<User> userIds;
         Project project = projectRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Project not found"));
+        
+        if (projectRequest.userIds() != null) {
+            userIds = userRepository.findAllById(projectRequest.userIds());
+        } else {
+            userIds = project.getUsers();
+        }
 
         if (securityUtil.extractUsername().equals(project.getCreatedBy()) || securityUtil.isAdmin()) {
             project.setName(projectRequest.name());
