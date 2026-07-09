@@ -61,7 +61,7 @@ public class UserServiceImpl implements UserService {
     public void deleteUser(Long id) {
         User user = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
-        if (user.getUsername().equals(securityUtil.extractUsername())) {
+        if (user.getUsername().equals(securityUtil.extractUsername()) || securityUtil.isAdmin()) {
             userRepository.deleteById(id);
         } else {
             throw new ForbiddenException("Permissions not found");
@@ -72,7 +72,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponse updateUser(UserRequest userRequest, Long id) {
         User user = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not found"));
-        if (user.getUsername().equals(securityUtil.extractUsername())) {
+        if (user.getUsername().equals(securityUtil.extractUsername()) || securityUtil.isAdmin()) {
             user.setName(userRequest.name());
             user.setSurname(userRequest.surname());
             user.setEmail(userRequest.email());
