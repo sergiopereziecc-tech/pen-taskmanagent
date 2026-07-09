@@ -18,43 +18,19 @@ Layered: Controller → Service → Repository → Mapper → DTO pattern throug
 Stateless JWT filter (`JwtFilter`). `SecurityUtil` provides `getCurrentUsername()`. Role-based: `USER` (default on registration) and `ADMIN` (granted manually via DB only).
 
 ## Current State
-Deployed and running. Swagger UI live at `/swagger-ui/index.html`. The following issues need fixing before this is fully portfolio-ready.
+Deployed and running. Swagger UI live at `/swagger-ui/index.html`. Portfolio-ready pending one manual step (see Open Issues).
 
 ## Open Issues (priority order)
 
-### 1. Hybrid access model (CRITICAL)
-`SecurityConfig` currently gates all write routes on `ROLE_ADMIN`. No user can ever become ADMIN through the app. A freshly registered user gets 403 on every action.
+### 1. Demo admin account (manual, not code)
+Promote one account to ADMIN on the deployed Railway instance via direct DB query so admin behavior is demonstrable to reviewers. Requires production DB access — do this manually, not via the app.
 
-**Fix:** Drop `hasRole("ADMIN")` from project/task routes in `SecurityConfig`, require only `authenticated()`. Move ownership + admin-bypass logic into service layer. Add `isAdmin()` helper to `SecurityUtil`.
-
-Specific service changes needed:
-- `ProjectServiceImpl`: creator or admin can update/delete
-- `TaskServiceImpl.createTask`: verify caller is project creator, collaborator, or admin
-- `TaskServiceImpl.updateTask/deleteTask`: assignee, project creator, or admin
-- `UserServiceImpl.updateUser/deleteUser`: self or admin
-- `GET /api/user`: open to any authenticated user (needed for collaborator lookup)
-
-### 2. NPE on unassigned tasks
-`deleteTask` and `updateTask` call `task.getUser().getUsername()` with no null check. Creating an unassigned task then deleting/updating it throws NPE → generic 500.
-
-**Fix:** Null-check `task.getUser()` before username comparison.
-
-### 3. Inconsistent null handling on `userId` in `updateTask`
-`createTask` handles null `userId` gracefully. `updateTask` calls `userRepository.findById(taskRequest.userId())` unconditionally → `IllegalArgumentException` → generic 500.
-
-**Fix:** Match null handling between create and update.
-
-### 4. Demo admin account
-Promote one account to ADMIN on the deployed Railway instance via direct DB query so admin behavior is demonstrable to reviewers.
-
-### 5. Tests
-Only `TaskServiceImpl` has tests. Need tests for `ProjectServiceImpl` and `UserServiceImpl`, including the new ownership/admin-bypass logic.
-
-### 6. Polish
-- Fill `pom.xml` metadata (`<name>`, `<description>`, `<url>`, `<developer>`)
-- Remove stale `.gitignore` rule for `application.properties`
-- Remove commented-out `setStartTime` lines in `ProjectServiceImpl` and `TaskServiceImpl`
-- Add GitHub Actions workflow running `mvn test` on push
+## Resolved
+- **Hybrid access model**: `SecurityConfig` now only requires `authenticated()` on project/task routes; ownership + admin-bypass logic lives in the service layer via `SecurityUtil.isAdmin()`.
+- **NPE on unassigned tasks**: `deleteTask`/`updateTask` null-check `task.getUser()` before comparing username.
+- **Null handling on `userId` in `updateTask`**: matches `createTask`'s null-safe lookup.
+- **Tests**: `ProjectServiceImpl` and `UserServiceImpl` now have unit tests (ownership/admin-bypass coverage), alongside existing `TaskServiceImpl` tests.
+- **Polish**: `pom.xml` metadata filled, stale `.gitignore` rule removed, no leftover commented-out `setStartTime` lines, GitHub Actions workflow runs `mvn test` on push.
 
 ## Git Conventions
 - No commits on `main` directly
