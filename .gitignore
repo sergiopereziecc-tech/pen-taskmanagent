@@ -31,6 +31,5 @@ build/
 
 ### VS Code ###
 .env
-application.properties
 postgres-data/
 

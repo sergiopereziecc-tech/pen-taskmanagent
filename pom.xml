@@ -11,14 +11,13 @@
 	<groupId>com.pen</groupId>
 	<artifactId>taskmanagement</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name/>
-	<description/>
-	<url/>
-	<licenses>
-		<license/>
-	</licenses>
+	<name>PEN Task Management API</name>
+	<description>A Trello-style task management REST API built with Java 21, Spring Boot, JWT auth, and PostgreSQL</description>
+	<url>https://github.com/sergiopereziecc-tech/pen-taskmanagent</url>	
 	<developers>
-		<developer/>
+		<developer>
+        	<name>Sergio Pérez</name>
+    	</developer>
 	</developers>
 	<scm>
 		<connection/>
