@@ -2,7 +2,6 @@ package com.pen.taskmanagement.service;
 
 import java.time.LocalDateTime;
 
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -20,7 +19,6 @@ import com.pen.taskmanagement.repository.ProjectRepository;
 import com.pen.taskmanagement.repository.TaskRepository;
 import com.pen.taskmanagement.repository.UserRepository;
 import com.pen.taskmanagement.utilities.SecurityUtil;
-
 
 import lombok.RequiredArgsConstructor;
 
@@ -45,11 +43,17 @@ public class TaskServiceImpl implements TaskService {
         Project project = projectRepository.findById(taskRequest.projectId())
                 .orElseThrow(() -> new ResourceNotFoundException("Project not found"));
 
-        Task task = taskMapper.toEntity(taskRequest, user, project);
-        task.setStartTime(LocalDateTime.now());
-        TaskResponse taskResponse = taskMapper.toResponse(taskRepository.save(task));
+        if (project.getCreatedBy().equals(securityUtil.extractUsername()) || project.getUsers().stream()
+                .anyMatch(u -> u.getUsername().equals(securityUtil.extractUsername())) || securityUtil.isAdmin()) {
+            Task task = taskMapper.toEntity(taskRequest, user, project);
+            task.setStartTime(LocalDateTime.now());
+            TaskResponse taskResponse = taskMapper.toResponse(taskRepository.save(task));
 
-        return taskResponse;
+            return taskResponse;
+        } else {
+            throw new ForbiddenException("Permission not found");
+        }
+
     }
 
     @Override
@@ -57,7 +61,7 @@ public class TaskServiceImpl implements TaskService {
     public Page<TaskResponse> readAllTask(Pageable pageable) {
         return taskRepository.findAll(pageable)
                 .map(taskMapper::toResponse);
-        
+
     }
 
     @Override
@@ -76,9 +80,11 @@ public class TaskServiceImpl implements TaskService {
 
         Task task = taskRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Task not found"));
 
+        Project project = task.getProject();
+
         String username = securityUtil.extractUsername();
 
-        if (username.equals(task.getUser().getUsername())) {
+        if (task.getUser() != null && task.getUser().getUsername().equals(username) || securityUtil.isAdmin() || project.getCreatedBy().equals(securityUtil.extractUsername())) {
             taskRepository.deleteById(id);
         } else {
             throw new ForbiddenException("Permissions not found");
@@ -88,26 +94,31 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public TaskResponse updateTask(TaskRequest taskRequest, Long id) {
-        User user = userRepository.findById(taskRequest.userId())
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        User user = (taskRequest.userId() != null)
+                ? (userRepository.findById(taskRequest.userId())
+                        .orElseThrow(() -> new ResourceNotFoundException("User not found")))
+                : (null);
 
         Project project = projectRepository.findById(taskRequest.projectId())
                 .orElseThrow(() -> new ResourceNotFoundException("Project not found"));
-        Task task = taskRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Task not found"));
-        String username = securityUtil.extractUsername();
 
-        if (username.equals(task.getUser().getUsername())) {
+        Task task = taskRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Task not found"));
+
+        if ((task.getUser() != null && task.getUser().getUsername().equals(securityUtil.extractUsername()))
+                || project.getCreatedBy().equals(securityUtil.extractUsername())
+                || securityUtil.isAdmin()) {
             task.setName(taskRequest.name());
             task.setDescription(taskRequest.description());
-            // task.setStartTime(taskRequest.startDateTime());
             task.setEndTime(taskRequest.endDateTime());
             task.setProject(project);
             task.setUser(user);
+
         } else {
             throw new ForbiddenException("Permissions not found");
         }
 
         return taskMapper.toResponse(taskRepository.save(task));
+
     }
 
 }
