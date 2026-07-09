@@ -67,7 +67,7 @@ public class ProjectServiceImpl implements ProjectService {
         Project project = projectRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Project not found"));
 
-        if (securityUtil.extractUsername().equals(project.getCreatedBy())) {
+        if (securityUtil.extractUsername().equals(project.getCreatedBy()) || securityUtil.isAdmin()) {
             projectRepository.deleteById(id);
         } else {
             throw new ForbiddenException("Permissions not found");
@@ -81,10 +81,9 @@ public class ProjectServiceImpl implements ProjectService {
         Project project = projectRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Project not found"));
 
-        if (securityUtil.extractUsername().equals(project.getCreatedBy())) {
+        if (securityUtil.extractUsername().equals(project.getCreatedBy()) || securityUtil.isAdmin()) {
             project.setName(projectRequest.name());
             project.setDescription(projectRequest.description());
-            // project.setStartTime(projectRequest.starDateTime());
             project.setEndTime(projectRequest.endDateTime());
             project.setUsers(userIds);
         } else {
